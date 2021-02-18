@@ -5,6 +5,7 @@ import QuizLogo from '../src/components/QuizLogo';
 import QuizBackground from '../src/components/QuizBackground';
 import QuizContainer from '../src/components/QuizContainer';
 import Button from '../src/components/Button';
+import AlternativesForm from '../src/components/AlternativeForm';
 
 function ResultWidget({ result }) {
   const [acertos,setAcertos] = useState(0);
@@ -58,6 +59,7 @@ function QuestionWidget({
   const [isFormSubmit,setIsFormSubmit] = useState(false);
   const isCorrect = alternativaSelecionada === question.answer;  
   const questionId = `question__${questionIndex}`;
+  const alternativeStatus = isCorrect ? 'SUCCESS' : 'ERROR';
   
   return (
     <Widget>
@@ -85,7 +87,7 @@ function QuestionWidget({
           {question.description}
         </p>
 
-        <form
+        <AlternativesForm
           onSubmit={(infosDoEvento) => {
             infosDoEvento.preventDefault();
             setIsFormSubmit(true);
@@ -108,15 +110,18 @@ function QuestionWidget({
                 as="label"
                 htmlFor={alternativeId}
                 key={alternativeId}
+                data-selected={alternativaSelecionada === alternativeIndex}
+                data-status={isFormSubmit && alternativeStatus }
               >
                 <input
-                  //style={{ display: 'none' }}
+                  style={{ display: 'none' }}
                   id={alternativeId}
                   name={questionId}
                   type="radio"
+                  checked={false}
                   disabled={isFormSubmit}
-                  onChange={()=>{
-                    //console.log(alternativaSelecionada);
+                  onChange={(event)=>{
+                    //console.log(event.target.checked);
                     setAlternativaSelecionada(alternativeIndex);
                      
                   }}
@@ -132,7 +137,7 @@ function QuestionWidget({
           <Button type="submit" disabled={alternativaSelecionada === undefined || isFormSubmit}>
             Confirmar
           </Button>
-        </form>
+        </AlternativesForm>
         {isCorrect && isFormSubmit && <p>Você Acertou !!</p>}
         {!isCorrect && isFormSubmit && <p>Você Errou !!</p>}
        {/* <p>{alternativaSelecionada}</p> */}
